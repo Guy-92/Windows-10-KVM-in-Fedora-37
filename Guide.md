@@ -12,7 +12,7 @@ Muxed Configuration
 
 Libvirt Version: 8.6.0
 
-
+Please backup your XML before making these changes
 
 # Adding NVIDIA Devices
 
@@ -38,16 +38,16 @@ The output should list the "Kernel driver in use" as vfio-pci, for example, this
 	Kernel modules: i2c_nvidia_gpu
 ```
 
-1) Create a VM and add all the PCI devices with NVIDIA in it's name.
+2) Create a VM and add all the PCI devices with NVIDIA in it's name.
 
-2) Copy the XML to a text editor, I used VS Code. This makes it easier to find addresses using ctrl+f.
+3) Copy the XML to a text editor, I used VS code. This makes it easier to find addresses using ctrl+f.
 
-12) Replace the first line (domain type) in the XML with the line below
+4) Replace the first line (domain type) in the XML with the line below
 `<domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0" type="kvm">`.
 
-13) Remove the "address type" line for all the devices, except for the devices that isn't a part of the GPU. Meaning delete all lines that start with `        <address type`, that isn't a part of the GPU.
+5) Remove the "address type" line for all the devices, except for the devices that isn't a part of the GPU. Meaning delete all lines that start with `        <address type`, that isn't a part of the GPU.
 
-14) Replace the address type's "domain", "bus", "slot" and "function", with the source "domain", "bus", "slot" and "function", of all the NVIDIA GPU Devices.
+6) Replace the address type's "domain", "bus", "slot" and "function", with the source "domain", "bus", "slot" and "function", of all the NVIDIA GPU Devices.
 
 For example, in my XML, I will change this
 ```
@@ -218,29 +218,22 @@ My section after the changes looks like this
 </hostdev>
 ```
 
-9) Run this code in your terminal `lspci -Dnn | grep VGA`, on my laptop, the output is 
-```
-[user@legion ~]$ lspci -Dnn | grep VGA
-0000:01:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU116M [GeForce GTX 1660 Ti Mobile] [10de:2191] (rev a1)
-0000:05:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. [AMD/ATI] Renoir [1002:1636] (rev c6)
-```
+Note: I'm not sure if the address type is the same in all laptops, the above step worked for me. Refer to the "How to get your address domain" section at the end to get your address domain.
 
-9) Take note of the PCI address of the VGA compatible controller of your integrated graphics, mine is `0000:05:00.0`
+6) Type this in your terminal `lspci -nks 01:00.0`
 
-1) Run this code `lspci -nks ` and then the PCI address of your integrated graphics. For me it is `lspci -nks 0000:05:00.0`
-
-2) Convert the hex code of the two properties  to decimal using a converter like this one [Hexadecimal to Decimal Converter](https://www.rapidtables.com/convert/number/hex-to-decimal.html). So for example, in my laptop, the output is
+7) Convert the hex code of the two properties  "Subsystem" line to decimal using a converter like this one [Hexadecimal to Decimal Converter](https://www.rapidtables.com/convert/number/hex-to-decimal.html). So for example, in my laptop, the output is
 
 ```
-05:00.0 0300: 1002:1636 (rev c6)
+01:00.0 0300: 10de:2191 (rev a1)
 	Subsystem: 17aa:3a46
-	Kernel driver in use: amdgpu
-	Kernel modules: amdgpu
+	Kernel driver in use: pci-stub
+	Kernel modules: nouveau, nvidia_drm, nvidia
 ```
 
 I converted the hex code "17aa", the result is "6058", and the hex code "3a46", which is "14918".
 
-9) Add these lines to the end of the XML, in between `<devices/>` and `<domain/>`
+8) Add these lines to the end of the XML, in between `<devices/>` and `<domain/>`
 
 ```
   <qemu:override>
@@ -279,7 +272,8 @@ cBcBC9A5C1gCCywBCjwKPA0ADQANTElPTgANABQSX0JTVACkEgoEAAALcBcL0Dk=
   </qemu:commandline>
 ```
 
-5) Copy the full XML, go back to Virt-Manager, delete everything there and paste the edited XML, click apply and Virt-Manager will add the missing addresses.
+5) Replace the path "/var/lib/libvirt/images/pool/SSDT1.dat" with the path to your SSDT1.dat file
+6) Copy the full XML, go back to Virt-Manager, delete everything there and paste the edited XML, click apply and Virt-Manager will add the missing addresses.
 
   
 # How to get your address domain
@@ -288,7 +282,7 @@ cBcBC9A5C1gCCywBCjwKPA0ADQANTElPTgANABQSX0JTVACkEgoEAAALcBcL0Dk=
 
 2) Make note of the PCI address of the NVIDIA GPU
 
-3) In the terminal, type `virsh nodedev-dumpxml "pci_device"` and replace "pci_device" with `pci_$YOUR_PCI_DEVICE`, substituting the colons and decimals with underscores, for example, this is how I did it in my laptop
+3) In the terminal, type `virsh nodedev-dumpxml "pci_device"` and replace "pci_device" with `pci_$YOUR_PCI_DEVICE`, substituting the colons and decimals with underscores, for example, this is how I did it
 
 ```
 [user@legion ~]$ lspci -Dnn | grep VGA
@@ -320,7 +314,7 @@ cBcBC9A5C1gCCywBCjwKPA0ADQANTElPTgANABQSX0JTVACkEgoEAAALcBcL0Dk=
 </device>
 ```
 
-4) Make sure the devices listed matches the things in your XML.
+4) Make sure the devices listed matches the address domains in your XML.
 
 ---
 
