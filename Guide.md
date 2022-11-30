@@ -21,11 +21,7 @@ Please backup your XML before making these changes
 The output should list the "Kernel driver in use" as vfio-pci, for example, this is mine
 
 ```
-01:00.0 0300: 10de:2191 (rev a1)
-	Subsystem: 17aa:3a46
-	Kernel driver in use: pci-stub
-	Kernel modules: nouveau, nvidia_drm, nvidia
-[amirs@legion ~]$ lspci -nks 01:00.
+[user@legion ~]$ lspci -nks 01:00.
 01:00.0 0300: 10de:2191 (rev a1)
 	Subsystem: 17aa:3a46
 	Kernel driver in use: pci-stub
