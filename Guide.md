@@ -21,20 +21,25 @@ Please backup your XML before making these changes
 The output should list the "Kernel driver in use" as vfio-pci, for example, this is mine
 
 ```
-01:00.0 VGA compatible controller: NVIDIA Corporation TU116M [GeForce GTX 1660 Ti Mobile] (rev a1)
-	Subsystem: Lenovo Device 3a46
-	Kernel driver in use: nvidia
+01:00.0 0300: 10de:2191 (rev a1)
+	Subsystem: 17aa:3a46
+	Kernel driver in use: pci-stub
 	Kernel modules: nouveau, nvidia_drm, nvidia
-01:00.1 Audio device: NVIDIA Corporation TU116 High Definition Audio Controller (rev a1)
-	Subsystem: NVIDIA Corporation TU116 High Definition Audio Controller
-	Kernel driver in use: snd_hda_intel
+[amirs@legion ~]$ lspci -nks 01:00.
+01:00.0 0300: 10de:2191 (rev a1)
+	Subsystem: 17aa:3a46
+	Kernel driver in use: pci-stub
+	Kernel modules: nouveau, nvidia_drm, nvidia
+01:00.1 0403: 10de:1aeb (rev a1)
+	Subsystem: 10de:1aeb
+	Kernel driver in use: pci-stub
 	Kernel modules: snd_hda_intel
-01:00.2 USB controller: NVIDIA Corporation TU116 USB 3.1 Host Controller (rev a1)
-	Subsystem: Lenovo Device 3a42
-	Kernel driver in use: xhci_hcd
-01:00.3 Serial bus controller: NVIDIA Corporation TU116 USB Type-C UCSI Controller (rev a1)
-	Subsystem: Lenovo Device 3a42
-	Kernel driver in use: nvidia-gpu
+01:00.2 0c03: 10de:1aec (rev a1)
+	Subsystem: 17aa:3a42
+	Kernel driver in use: pci-stub
+01:00.3 0c80: 10de:1aed (rev a1)
+	Subsystem: 17aa:3a42
+	Kernel driver in use: pci-stub
 	Kernel modules: i2c_nvidia_gpu
 ```
 
