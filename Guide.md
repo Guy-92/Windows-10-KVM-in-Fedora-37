@@ -16,7 +16,7 @@ Please backup your XML before making these changes
 
 # Adding NVIDIA Devices
 
-1) First make sure your GPU is binded to VFIO, you can check by typing `lspci -ks 01:00.`
+1) First, make sure your GPU is binded to VFIO, you can check by typing `lspci -ks 01:00.`
 
 The output should list the "Kernel driver in use" as vfio-pci, for example, this is mine
 
@@ -44,9 +44,9 @@ The output should list the "Kernel driver in use" as vfio-pci, for example, this
 3) Copy the XML to a text editor, I used VS code. This makes it easier to find addresses using ctrl+f.
 
 4) Replace the first line (domain type) in the XML with the line below
-`<domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0" type="kvm">`.
+`<domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0" type="kvm">`. This is so you can add QEMU arguments to the XML.
 
-5) Remove the "address type" line for all the devices, except for the devices that isn't a part of the GPU. Meaning delete all lines that start with `        <address type`, that isn't a part of the GPU.
+5) Remove the "address type" line for all the devices, except for the devices that isn't a part of the GPU. Meaning delete all lines that start with `        <address type`, that isn't a part of the GPU. This is so that no device address conflicts with the NVIDIA GPU devices addresses that you will set.
 
 6) Replace the address type's "domain", "bus", "slot" and "function", with the source "domain", "bus", "slot" and "function", of all the NVIDIA GPU Devices.
 
@@ -219,7 +219,6 @@ My section after the changes looks like this
 </hostdev>
 ```
 
-Note: I'm not sure if the address type is the same in all laptops, the above step worked for me. Refer to the "How to get your address domain" section at the end to get your address domain.
 
 6) Type this in your terminal `lspci -nks 01:00.0`
 
