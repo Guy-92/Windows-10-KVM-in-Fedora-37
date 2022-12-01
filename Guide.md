@@ -43,7 +43,7 @@ The output should list the "Kernel driver in use" as vfio-pci or pci-stub, for e
 
 2) Create a VM and add all the PCI devices with NVIDIA in it's name.
 
-3) Copy the XML to a text editor, I used VS code. This makes it easier to find addresses using ctrl+f.
+3) (optional) Copy the XML to a text editor, I used VS code. This makes it easier to find addresses using ctrl+f.
 
 4) Replace the first line (domain type) in the XML with the line below
 `<domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0" type="kvm">`. This is so you can add QEMU arguments to the XML.
@@ -205,7 +205,7 @@ My section after the changes looks like this
 
 </source>
 
-<address type="pci" omain="0x0000" bus="0x01" slot="0x00" function="0x2"/>
+<address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x2"/>
 
 </hostdev>
 
@@ -223,7 +223,7 @@ My section after the changes looks like this
 ```
 
 
-6) Copy the full XML, go back to Virt-Manager, delete everything there and paste the edited XML, click apply and Virt-Manager will add the missing addresses.  
+6) If you edited the XML in a text editor, copy the full XML, go back to Virt-Manager, delete everything there and paste the edited XML, click apply and Virt-Manager will add the missing addresses.
 
 # How to get your address domain
 
@@ -268,7 +268,7 @@ The instructions below can be used to confirm your NVIDIA GPU address domain.
 4) Make sure the devices listed matches the address domains in your XML.
 
 
-Other things to do is adding the device and vendor ids, and adding a fake battery if needed. How to do them is mentioned in u/firelightning13's excellent guide [here](https://gist.github.com/firelightning13/e530aec3e3a4e15885a10f6c4b7ae021).
+Other things to do is adding the device and vendor ids, and adding a fake battery if needed. How to do them is mentioned in [u/firelightning13](https://www.reddit.com/user/firelightning13/)'s guide [here](https://gist.github.com/firelightning13/e530aec3e3a4e15885a10f6c4b7ae021).
 
 
 
