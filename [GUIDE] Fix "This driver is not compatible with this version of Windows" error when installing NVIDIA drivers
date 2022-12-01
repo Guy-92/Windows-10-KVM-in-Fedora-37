@@ -16,7 +16,7 @@ Libvirt Version: 8.6.0
 
 Please backup your XML before making these changes
 
-## Adding NVIDIA Devices
+# Adding NVIDIA Devices
 
 1) First, make sure your GPU is binded to vfio-pci or pci-stub, you can check by typing `lspci -ks 01:00.`
 
