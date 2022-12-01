@@ -233,7 +233,7 @@ The instructions below can be used to confirm your NVIDIA GPU address domain.
 
 2) Make note of the PCI address of the NVIDIA GPU
 
-3) In the terminal, type `virsh nodedev-dumpxml "pci_device"` and replace "pci_device" with `pci_$YOUR_PCI_DEVICE`, substituting the colons and decimals with underscores, for example, this is how I did it
+3) In the terminal, type `virsh nodedev-dumpxml "pci_device"` and replace "pci_device" with the pci address of your NVIDIA GPU, substituting the colons and decimals with underscores, for example, this is how I did it
 
 ```
 [user@legion ~]$ lspci -Dnn | grep VGA
