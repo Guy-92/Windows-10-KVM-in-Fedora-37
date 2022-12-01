@@ -18,9 +18,9 @@ Please backup your XML before making these changes
 
 # Adding NVIDIA Devices
 
-1) First, make sure your GPU is binded to VFIO, you can check by typing `lspci -ks 01:00.`
+1) First, make sure your GPU is binded to vfio-pci or pci-stub, you can check by typing `lspci -ks 01:00.`
 
-The output should list the "Kernel driver in use" as vfio-pci, or pci-stub, for example, this is mine
+The output should list the "Kernel driver in use" as vfio-pci or pci-stub, for example, this is mine
 
 ```
 [user@legion ~]$ lspci -nks 01:00.
