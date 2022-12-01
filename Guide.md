@@ -12,13 +12,15 @@ Muxed Configuration
 
 Libvirt Version: 8.6.0
 
+---  
+
 Please backup your XML before making these changes
 
 # Adding NVIDIA Devices
 
 1) First, make sure your GPU is binded to VFIO, you can check by typing `lspci -ks 01:00.`
 
-The output should list the "Kernel driver in use" as vfio-pci, for example, this is mine
+The output should list the "Kernel driver in use" as vfio-pci, or pci-stub, for example, this is mine
 
 ```
 [user@legion ~]$ lspci -nks 01:00.
@@ -102,6 +104,7 @@ For example, in my XML, I will change this
 ```
 
 To this
+
 ```
 <hostdev mode="subsystem" type="pci" managed="yes">
 
@@ -220,64 +223,12 @@ My section after the changes looks like this
 ```
 
 
-6) Type this in your terminal `lspci -nks 01:00.0`
+6) Copy the full XML, go back to Virt-Manager, delete everything there and paste the edited XML, click apply and Virt-Manager will add the missing addresses.  
 
-7) Convert the hex code of the two properties  "Subsystem" line to decimal using a converter like this one [Hexadecimal to Decimal Converter](https://www.rapidtables.com/convert/number/hex-to-decimal.html). So for example, in my laptop, the output is
-
-```
-01:00.0 0300: 10de:2191 (rev a1)
-	Subsystem: 17aa:3a46
-	Kernel driver in use: pci-stub
-	Kernel modules: nouveau, nvidia_drm, nvidia
-```
-
-I converted the hex code "17aa", the result is "6058", and the hex code "3a46", which is "14918".
-
-8) Add these lines to the end of the XML, in between `<devices/>` and `<domain/>`
-
-```
-  <qemu:override>
-    <qemu:device alias="hostdev0">
-      <qemu:frontend>
-        <qemu:property name="x-pci-sub-vendor-id" type="unsigned" value="6058"/>
-        <qemu:property name="x-pci-sub-device-id" type="unsigned" value="14918"/>
-      </qemu:frontend>
-    </qemu:device>
-  </qemu:override>
-```
-
-11) Add the first converted hex code as the sub vendor id number, ie. replace "6058" with your first converted decimal number, and add the second converted hex code as the sub device id number, ie. replace "14918" with your second converted decimal number.
-
-
-# Adding fake battery to your VM
-
-1) Copy the following base64 string and paste it in this website. [base64.guru](https://base64.guru/converter/decode/file)
-
-```
-U1NEVKEAAAAB9EJPQ0hTAEJYUENTU0RUAQAAAElOVEwYEBkgoA8AFVwuX1NCX1BDSTAGABBMBi5f
-U0JfUENJMFuCTwVCQVQwCF9ISUQMQdAMCghfVUlEABQJX1NUQQCkCh8UK19CSUYApBIjDQELcBcL
-cBcBC9A5C1gCCywBCjwKPA0ADQANTElPTgANABQSX0JTVACkEgoEAAALcBcL0Dk=
-```
-
-2) Download the file, and rename it to "SSDT1.dat".
-
-3) Move this file to your pool, for me I moved it to the "/var/lib/libvirt/images/pool" folder.
-
-4) Add these lines in between `</devices>` and `<qemu:override>`
-
-```
-  <qemu:commandline>
-    <qemu:arg value="-acpitable"/>
-    <qemu:arg value="file=/var/lib/libvirt/images/pool/SSDT1.dat"/>
-  </qemu:commandline>
-```
-
-5) Replace the path "/var/lib/libvirt/images/pool/SSDT1.dat" with the path to your SSDT1.dat file
-6) Copy the full XML, go back to Virt-Manager, delete everything there and paste the edited XML, click apply and Virt-Manager will add the missing addresses.
-
-  
 # How to get your address domain
-  
+
+The instructions below can be used to confirm your NVIDIA GPU address domain.
+
 1) In the terminal, type `lspci -Dnn | grep VGA`
 
 2) Make note of the PCI address of the NVIDIA GPU
@@ -316,14 +267,20 @@ cBcBC9A5C1gCCywBCjwKPA0ADQANTElPTgANABQSX0JTVACkEgoEAAALcBcL0Dk=
 
 4) Make sure the devices listed matches the address domains in your XML.
 
+
+Other things to do is adding the device and vendor ids, and adding a fake battery if needed. How to do them is mentioned in u/firelightning13's excellent guide [here](https://gist.github.com/firelightning13/e530aec3e3a4e15885a10f6c4b7ae021).
+
+
+
 ---
 
-Guides I referenced,
-[[GUIDE] GPU Passthrough for Laptop with Fedora · GitHub](https://gist.github.com/firelightning13/e530aec3e3a4e15885a10f6c4b7ae021#enable-iommu-grouping)
+Other guides/references
+
+[[GUIDE] GPU Passthrough for Laptop with Fedora.md](https://gist.github.com/firelightning13/e530aec3e3a4e15885a10f6c4b7ae021)
 
 [NVIDIA GPU Passthrough on an Optimus MUXed Laptop | Lan Tian @ Blog](https://lantian.pub/en/article/modify-computer/laptop-muxed-nvidia-passthrough.lantian/?utm_source=pocket_saves)
 
-[Beginner VFIO Tutorial - Part 0: Demo and Hardware](https://www.youtube.com/watch?v=fFz44XivxWI)
+[Beginner VFIO Tutorial](https://www.youtube.com/playlist?list=PLG7vUqRxMOG6gsPXohhFht3UJbcCxYgcL)
 
 [20.23. Adding Multifunction PCI Devices to KVM Guest Virtual Machines Red Hat Enterprise Linux 7 | Red Hat Customer Portal](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-editing_a_guest_virtual_machines_configuration_file-adding_multifunction_pci_devices_to_kvm_guest_virtual_machines)
 
