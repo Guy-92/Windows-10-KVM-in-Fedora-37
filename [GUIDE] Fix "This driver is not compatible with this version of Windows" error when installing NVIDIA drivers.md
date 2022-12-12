@@ -265,7 +265,7 @@ The instructions below can be used to confirm your NVIDIA GPU address domain.
 </device>
 ```
 
-4) Make sure the devices listed matches the address domains in your XML.
+4) Make sure the address domains listed matches the address domains in your XML.
 
 
 Other things to do is adding the device and vendor ids, and adding a fake battery if needed. How to do them is mentioned in [firelightning13](https://gist.github.com/firelightning13)'s guide [here](https://gist.github.com/firelightning13/e530aec3e3a4e15885a10f6c4b7ae021).
